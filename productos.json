@@ -1,0 +1,16 @@
+[{"title": "coca cola",
+"description": "bebida gasificada sabor cola",
+"price": 300,
+"thumbnail":"https://www.google.com.ar/url?sa=i&url=https%3A%2F%2Fdiaonline.supermercadosdia.com.ar%2Fgaseosa-coca-cola-sabor-original-15-lts-16861%2Fp&psig=AOvVaw3gUYOTGEyUMSYSvHA7-_8k&ust=1681854136918000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCNiZroXxsf4CFQAAAAAdAAAAABAE",
+"code": "1a",
+"stock": 100
+},
+{
+    "title": "galletas de avena",
+    "description": "alimento hecho a base de avena",
+    "price": 200,
+    "thumbnail":"https://www.google.com.ar/url?sa=i&url=https%3A%2F%2Fquaker.lat%2Fmx%2Fproductos-quaker%2Fbarras-y-galletas%2Fquaker-galleta-de-avena-frutos-rojos%2F&psig=AOvVaw2L4YDUzXteg8bhCLQZhREq&ust=1681854230927000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCOiQwbLxsf4CFQAAAAAdAAAAABAI",
+    "code": "b1",
+    "stock": 200
+  }
+]
