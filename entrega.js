@@ -1,10 +1,53 @@
 const fs = require("fs");
 
+import express  from "express";
+
+const app = express();
+const PORT = 8080;
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
+app.get('/products', async (req, res) => {
+  try {
+    const {limit} = req.query;
+    const products = await productManager.getProducts();
+    if(limit) {
+      res.status(200).json(product.slice(0, limit));
+    } else {
+      res.status(200).json(products);
+    }
+  } catch (error) {
+    res.status(200).json({message: 'hubo un error'});
+  }
+})
+
+app.get('/products/:id', async (req, res) => {
+  try {
+    const {id} = req.params;
+    const product = await productManager.getProductsById(parseInt(id));
+    if (!product) {
+      return req.status(404).json({error:'product not found'});
+    }
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json({message:'hubo un error'});
+  }
+} );
+
+app.listen(PORT,() => {
+  console.log(`listening on port ${port}`);
+});
+
+
+
+
 class ProductManager {
     constructor(path) {
-      this.path = path;
+      this.path = 'productos.json';
       this.products = [];
       this.id=1
+
 
       if(fs.existsSync(path)){
         const productString = fs.readFileSync(this.path, "utf-8");
@@ -18,10 +61,24 @@ class ProductManager {
       }
     }
 
+    async readData() {
+      try{
+        if(fs.existsSync(this.path)){
+        const data = await fs.promises.readFile(this.path,'utf-8');
+        return JSON.parse(data);
+        }
+        await fs.promises.readFile(this.path,JSON.stringify([]));
+        return[];
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
 
+    async addProduct(product){
+      try{ 
+      let data = await this.readData();
 
-    addProduct(product){
-        let checkCode = this.products.find((p) => p.code === product.code);
+        let checkCode = this.readData.find((p) => p.code === product.code);
         if (checkCode) {
           // throw new Error('This code already exists');
           return 'This code already exists';
@@ -38,57 +95,76 @@ class ProductManager {
           return 'Fields missing';
         }
         let newProduct = { ...product, id: this.id };
-        this.products.push(newProduct);
+        data.push(newProduct);
         this.id++;
 
 
-        const productsString = JSON.stringify(this.products, null, 2);
-        fs.writeFileSync(this.path, productsString);
+        const productsString = JSON.stringify(data, null, 2);
+        await fs.promises.writeFile(this.path, productsString);
 
         return 'Product added';
+      } catch (error){
+        throw new error (e);
+      }
     }
 
-    getProducts(){
+    async getProducts(){
+      try{
         return this.products;
+      } catch (error){
+        throw new error (e);
+      }
     }
 
-    getProductsById(id){
-        let found = this.products.find((p) => p.id === id);
+    async getProductsById(id){
+      try{ 
+        let found = data.find((p) => p.id === id);
         if (!found) {
           return 'Not found';
         }
         return found;
+      } catch (error){
+        throw new error (e);
+      }
     }
 
-    updateproduct(updateId, dataUpdate){
-      const productsIndex = this.products.findIndex(element = element.i===updateId)
+    async updateproduct(updateId, dataUpdate){
+      try { 
+      const productsIndex = data.findIndex(element = element.i===updateId)
 
       if(productsIndex === -1){
         return {error: "el producto no se encontro"}
       } else{
         if(typeof(dataUpdate) ==='object'){
-          this.products[productsIndex] = {dataUpdate , id: updateId}
+          data[productsIndex] = {dataUpdate , id: updateId}
           const productsString = JSON.stringify(this.products, null, 2)
-          fs.writeFileSync(this.path, productsString);
+          await fs.promises.writeFile(this.path, productsString);
 
           return "Update product"
         }else {
           return "error: the object has not been sent"
         }
       } 
+    } catch (error){
+      throw new error (e);
     }
+  }
 
-    deleteProduct(deleteId){
-      const productIndex = this.products.findIndex(element = element.i=== deleteId)
+    async deleteProduct(deleteId){
+      try{ 
+      const productIndex = data.findIndex(element = element.i=== deleteId)
       if(productIndex >= 0){
-        let products = this.products.filter((item) => item.id !== deleteId)
+        let products = data.filter((item) => item.id !== deleteId)
         const productsString = JSON.stringify(products, null, 2)
-        fs.writeFileSync(this.path, productsString);
+        await fs.promises.writeFile(this.path, productsString);
       
         return "eliminated object"
       }else{
         return "product with no ID"
       }
+    } catch (error){
+      throw new error (e);
+    }
 }    
 
 }
@@ -121,5 +197,11 @@ let product2 = {
   };
   
   const productManager = new ProductManager("productos.json");
+
+  const asyncFn = async () => {
+
+  }
+  asyncFn()
+
 
   console.log(productManager.updateproduct(1,product3))
